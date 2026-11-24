@@ -1,96 +1,58 @@
 # Credit Card Approval Prediction
 
-## Overview
-This project focuses on predicting credit card approval risk using customer application records and credit history data. The goal is to classify applicants as good or risky clients based on their personal, financial, and credit behavior information.
+An academic classification study using application attributes and repayment history to explore credit-risk labeling, preprocessing and model comparison.
 
-The project combines two datasets: `application_record.csv` and `credit_record.csv`. A target variable was created from the credit status column, where customers with no overdue history were labeled as good clients and customers with at least one late payment record were labeled as risky clients.
+**Stack:** Python · pandas · scikit-learn · LightGBM · CatBoost · Matplotlib · Seaborn  
+**Status:** Analysis prototype. The label is derived from repayment history; it is not an observed lender approval decision.
 
-## Key Features
-- Loaded and merged application and credit record datasets
-- Created a binary target variable from credit repayment status
-- Removed duplicate records
-- Handled missing occupation values by replacing them with `Other`
-- Performed exploratory data analysis using visualizations
-- Analyzed gender, car ownership, work phone, occupation, family status, housing type, family members, and education level
-- Built preprocessing pipelines for numerical and categorical features
-- Applied scaling and one-hot encoding
-- Trained and compared multiple machine learning classification models
-- Evaluated models using accuracy score and classification report
+[Analysis source](CREDIT%20CARD%20APPROVAL%20PREDICTION.py) · [Dependencies](requirements.txt) · [Data instructions](data/README.md)
 
-## Technologies Used
-- Python
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-- Scikit-learn
-- LightGBM
-- CatBoost
+## Workflow
 
-## Dataset
-The project uses two datasets:
+1. Read application and monthly credit-history records.
+2. Map `X` and `C` status values to zero and flag applicants with a nonzero repayment status.
+3. Join the datasets by applicant ID and remove duplicate records.
+4. Fill missing occupation values with `Other` and explore demographic/financial attributes.
+5. Scale numerical features and one-hot encode categorical features through a `ColumnTransformer`.
+6. Compare classifiers using accuracy and classification reports.
 
-- `application_record.csv`
-- `credit_record.csv`
+The source includes Random Forest, Decision Tree, AdaBoost, KNN, Logistic Regression, LightGBM, CatBoost, Extra Trees, Gaussian Naive Bayes and Gradient Boosting experiments.
 
-The application dataset contains customer demographic and financial details, while the credit dataset contains repayment status records. These datasets are merged using the customer ID.
+## Data requirements
 
-## Machine Learning Models Used
-- Random Forest Classifier
-- Decision Tree Classifier
-- AdaBoost Classifier
-- K-Nearest Neighbors
-- Logistic Regression
-- LightGBM Classifier
-- CatBoost Classifier
-- Extra Trees Classifier
-- Naive Bayes
-- Gradient Boosting Classifier
+Place both files in the repository root:
 
-## Features Used
-### Numerical Features
-- Number of children
-- Total income
-- Age / days birth
-- Employment duration
-- Number of family members
+| File | Availability |
+| --- | --- |
+| `credit_record.csv` | Included |
+| `application_record.csv` | Required separately; not included in this repository |
 
-### Categorical Features
-- Gender
-- Car ownership
-- Realty ownership
-- Income type
-- Education type
-- Family status
-- Housing type
-- Occupation type
+The application file must contain `ID` and the demographic/financial columns referenced in the script. The credit file uses `ID`, `MONTHS_BALANCE` and `STATUS`.
 
-## Methodology
-First, the credit status values were cleaned by replacing `X` and `C` with 0, representing good clients. Any customer with at least one late payment month was marked as 1, representing a risky client. The application and credit datasets were then merged using customer ID.
+Install the listed dependencies:
 
-After cleaning and handling missing values, exploratory data analysis was performed using count plots, heatmaps, and distribution charts. A machine learning pipeline was created using `ColumnTransformer`, `StandardScaler`, and `OneHotEncoder` to preprocess numerical and categorical features before model training.
+```bash
+python -m pip install -r requirements.txt
+```
 
-Multiple classification models were trained and evaluated to compare their performance in predicting credit card approval risk.
+The original analysis is exported as a Python script:
 
-## Visualizations
-- Correlation heatmap
-- Car ownership by gender
-- Work phone availability by gender
-- Occupation distribution
-- Family status distribution
-- Housing type distribution
-- Family member count distribution
-- Education level distribution
-- Credit status by gender
-- Gender distribution
+```bash
+python "CREDIT CARD APPROVAL PREDICTION.py"
+```
 
-## Future Improvements
-- Add ROC-AUC, precision, recall, and F1-score comparison table
-- Handle class imbalance using SMOTE or class weights
-- Perform hyperparameter tuning with GridSearchCV or RandomizedSearchCV
-- Add feature importance analysis
-- Save the best model using Pickle or Joblib
-- Build a Streamlit app for real-time credit approval prediction
+## Reproduction notes
+
+The export needs a few repairs before a reliable end-to-end rerun: import `FunctionTransformer` for the Naive Bayes section; handle sparse and dense matrices consistently; restrict the correlation heatmap to numeric columns with current pandas versions; and replace chained dataframe assignments with explicit operations.
+
+The current join can leave several monthly records for an applicant, after which the script drops IDs and performs a random row split. A defensible evaluation should preserve applicant IDs and split by applicant (or aggregate first) to avoid the same person appearing in training and testing.
+
+## Evaluation boundaries
+
+The repository does not include a validated benchmark report, saved model or deployment. Accuracy alone is insufficient for an imbalanced target; future evaluation should report per-class precision/recall, PR-AUC, calibration and subgroup performance on an applicant-level holdout.
+
+This is a learning project, not a lending decision system. Demographic attributes and retrospective target construction require careful review before any real-world use.
 
 ## Author
-Aswin S
+
+**Aswin S** · [GitHub](https://github.com/Aswin9629)
