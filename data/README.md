@@ -1,9 +1,10 @@
-# Dataset
+# Data requirements
 
-This project uses application and credit record datasets.
+Place these files in the repository root before running the analysis:
 
-Required files:
-- application_record.csv
-- credit_record.csv
+| File | Availability |
+| --- | --- |
+| `credit_record.csv` | Included in this repository |
+| `application_record.csv` | Required separately; not included |
 
-Place both CSV files in the project folder before running the code. The raw datasets are uploaded to this repository.
+The script reads both files by their names from the working directory. See the [main README](../README.md) for preprocessing and evaluation notes.
